@@ -49,8 +49,11 @@ def entropy(pi):
     return the Entropy of a probability distribution:
     entropy(p) = - SUM (Pi * log(Pi) )
     """
-
-    pass
+    if 0 in pi:
+        return 0
+    deno = sum(pi) 
+    entropy_ = -sum([i/deno* log(i/deno,2)for i in pi])
+    return entropy_
 
 
 # Test the function 
@@ -63,6 +66,11 @@ print(entropy([2, 10])) # A random mix of classes
 # 0.0
 # 0.6500224216483541
 ```
+
+    1.0
+    0
+    0.6500224216483541
+    
 
 ## Write a function `IG(D,a)` to calculate the information gain 
 
@@ -81,8 +89,12 @@ def IG(D, a):
     return the information gain:
     gain(D, A) = entropy(D)− SUM( |Di| / |D| * entropy(Di) )
     """
+    total = 0
+    for Di in a:
+        total += abs(sum(Di) / sum(D)) * entropy(Di)
 
-    pass
+    gain = entropy(D) - total
+    return gain
 
 
 # Test the function
@@ -96,6 +108,9 @@ print(IG(test_dist, test_attr))
 # 0.5408520829727552
 ```
 
+    0.5408520829727552
+    
+
 ## First iteration - Decide best split for master node
 
 - Create the class distribution `play` as a list showing frequencies of both classes from the dataset
@@ -104,10 +119,27 @@ print(IG(test_dist, test_attr))
 
 
 ```python
-# Your code here
+# Set of example of the dataset
+play = [9, 5] # Yes, No
 
+# attribute, number of members (feature)
+outlook = [
+    [3, 1],  # overcast   [yes, no]
+    [6, 1],  # sunny      
+    [0, 3]]   # rain
 
+temperature = [
+    [1, 2],  # hot
+    [4, 2],  # cool
+    [4, 1]]   # mild
 
+humidity = [
+    [4, 3],  # high
+    [5, 2]]   # normal
+
+wind = [
+    [5, 2],  # no
+    [4, 3]]   # yes
 
 # Information Gain:
 
@@ -123,6 +155,14 @@ print("Wind:,", IG(play, wind))
 # Wind:, 0.0161116063701896
 ```
 
+    Information Gain:
+    
+    Outlook: 0.41265581953400066
+    Temperature: 0.09212146003297261
+    Humidity: 0.0161116063701896
+    Wind:, 0.0161116063701896
+    
+
 We see here that the outlook attribute gives us the highest value for information gain, hence we choose this for creating a split at root node. So far we have our root node looking as below:
 <img src='images/outlook.png'  width ="650"  >
 
@@ -135,7 +175,12 @@ Follow the same steps as above. Remember, we have 6 positive and 1 negative exam
 
 
 ```python
-# Your code here 
+# Set of example of the dataset
+play = [6, 1] 
+
+temperature = [[1, 1],[3, 0], [2, 0]]  # hot, mild, cool [yes, no]  
+humidity = [[2, 0],[4, 1]]   # high, normal [yes, no]
+wind = [[3, 1],[3, 0]]      # Y, N [yes, no]
 
 
 
@@ -151,6 +196,13 @@ print("Wind:,", IG(play, wind))
 # Humidity: 0.6824544962108586
 # Wind:, 0.7084922088251644
 ```
+
+    Information Gain:
+    
+    Temperature: 0.3059584928680418
+    Humidity: 0.0760098536627829
+    Wind:, 0.12808527889139443
+    
 
 So here we see that temperature gives us the the highest information gain, so we'll use it to split our tree as shown below:
 
